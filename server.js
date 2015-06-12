@@ -12,7 +12,7 @@ module.exports = function(opts){
   console.log('have host: ' + host)
   console.log('have port: ' + port)
 
-  var client = redis.createClient(port, 'redis', {})
+  var client = redis.createClient(port, host, {})
 
   var router = Router()
   var fileServer = ecstatic({ root: __dirname + '/client' })
