@@ -8,11 +8,15 @@ module.exports = function(opts){
   var port = opts.redis_port || process.env.USE_REDIS_PORT || 6379
   var host = opts.redis_host || process.env.USE_REDIS_HOST || 'redis'
 
+  var client = redis.createClient(port, host, {})
+  client.on('error', function(err){
+    console.log(err)
+    console.log('I am stronger than that!')
+  })
+
   console.log('-------------------------------------------');
   console.log('have host: ' + host)
   console.log('have port: ' + port)
-
-  var client = redis.createClient(port, host, {})
 
   var router = Router()
   var fileServer = ecstatic({ root: __dirname + '/client' })
