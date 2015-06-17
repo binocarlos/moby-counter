@@ -34,6 +34,7 @@ module.exports = function(opts){
 
   router.addRoute("/v1/ping", {
     GET: function(req, res){
+      res.setHeader('Content-type', 'application/json')
       res.end(JSON.stringify({
         connected:connectionStatus
       }))
