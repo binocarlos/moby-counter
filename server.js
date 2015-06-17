@@ -8,10 +8,21 @@ module.exports = function(opts){
   var port = opts.redis_port || process.env.USE_REDIS_PORT || 6379
   var host = opts.redis_host || process.env.USE_REDIS_HOST || 'redis'
 
+  var connectionStatus = false
+
   var client = redis.createClient(port, host, {})
   client.on('error', function(err){
+    connectionStatus = false
+    console.log('Error from the redis connection:')
     console.log(err)
-    console.log('I am stronger than that!')
+  })
+  client.on('end', function(err){
+    connectionStatus = false
+    console.log('Lost connection to Redis server')
+  })
+  client.on('ready', function(err){
+    connectionStatus = true
+    console.log('Connection made to the Redis server')
   })
 
   console.log('-------------------------------------------');
@@ -20,6 +31,14 @@ module.exports = function(opts){
 
   var router = Router()
   var fileServer = ecstatic({ root: __dirname + '/client' })
+
+  router.addRoute("/v1/ping", {
+    GET: function(req, res){
+      res.end(JSON.stringify({
+        connected:false
+      }))
+    }
+  })
 
   router.addRoute("/v1/whales", {
     GET: function (req, res) {
