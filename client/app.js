@@ -52,7 +52,7 @@
     })
   }
 
-  function add_whale(x, y){
+  function add_whale(x, y, animate){
     var holder = document.getElementById('holder')
     var elem = document.createElement('div')
     $(elem).addClass('whale')
@@ -62,6 +62,9 @@
       width:width + 'px',
       height:height + 'px'
     })
+    if(animate){
+      $(elem).addClass('animated tada');  
+    }
     holder.appendChild(elem)
   }
 
@@ -78,7 +81,7 @@
     var x = e.pageX - offset.left - (width/2);
     var y = e.pageY - offset.top - (height/2);
     add_data(x, y, function(){
-      add_whale(x, y)
+      add_whale(x, y, true)
     })
   }
 

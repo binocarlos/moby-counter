@@ -19,14 +19,11 @@ html,body{
   height:100%;
   top:0px;
   left:0px;
-  background-color:#6666ff;
+  background-color:#fff;
 }
 
 .seabg {
-  background: -webkit-linear-gradient(red, blue); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(red, blue); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(red, blue); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(#ccccff, #6699ff, #000088); /* Standard syntax */
+  /*background: linear-gradient(#fff, #ccccff, #000088); Standard syntax */
 }
 
 .preloader{
@@ -36,4 +33,12 @@ html,body{
   top:0px;
   left:0px;
   background-color:rgba(255,255,255,0.8);
+  font-size:3em;
+  font-weight:bold;
+  color:#800;
+  font-family: Arial;
+}
+
+.preloader img{
+  width:50px;
 }
