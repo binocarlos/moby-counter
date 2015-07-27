@@ -11,7 +11,13 @@ module.exports = function(opts){
   var password = opts.postgres_password || process.env.POSTGRES_PASSWORD || 'flocker'
 
   var connectionStatus = false
-  var conString = 'postgres://' + user + ":" + password + '@' + host + ':' + port + '/postgres';
+  var now = new Date().getTime();
+
+  // Wait for WeaveDNS to setup DB hostname.
+  while(new Date().getTime() < now + 10000){ /* do nothing */ } 
+
+  // XXX: Use `user` and `password` from env.
+  var conString = 'postgres://' + 'postgres@' + host + '/postgres' ;
   console.log(conString)
 
   var client = new postgres.Client(conString);
@@ -19,15 +25,21 @@ module.exports = function(opts){
   if(err) {
     return console.error('could not connect to postgres', err);
   }
+
   client.query('SELECT NOW() AS "theTime"', function(err, result) {
     if(err) {
       return console.error('error running query', err);
     }
     console.log(result.rows[0].theTime);
-    //output: Tue Jan 15 2013 19:12:47 GMT-600 (CST)
-    client.end();
   });
-});
+
+  client.query('CREATE TABLE mywhales (whale text)', function(err, result) {
+    if(err) {
+      console.log('Error creating whales table:', err);
+    }
+  });
+
+  });
 
   console.log('-------------------------------------------');
   console.log('have host: ' + host)
@@ -48,20 +60,33 @@ module.exports = function(opts){
   router.addRoute("/v1/whales", {
     GET: function (req, res) {
       
-      client.lrange('whales', 0, -1, function(err, data){
+      console.log('Getting whales');
+
+      var select_query = client.query('SELECT * FROM mywhales')
+      var array = [];
+      select_query.on('row', function(row) {
+        console.log('Getting whale "%s"', row.whale);
+        array.push(row.whale);
+      });
+
+      select_query.on('end', function() {
+        console.log('Sending whales "%s"', JSON.stringify(array))
         res.setHeader('Content-type', 'application/json')
-        res.end(JSON.stringify(data))
-      })
+        res.end(JSON.stringify(array))
+      });
     },
+
     POST: function (req, res) {
       req.pipe(concat(function(data){
         data = data.toString()
 
-        client.rpush('whales', data, function(){
-          client.save(function(){
-            res.end('ok')  
-          })
+        console.log('Posting whale "%s"', data);
+        insert_stmt = 'INSERT INTO mywhales (whale) VALUES ($1)';
+
+        client.query(insert_stmt, [data], function(err, res) {
+          if (err) throw err;
         })
+        res.end('ok')
         
       }))
     }
