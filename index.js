@@ -2,13 +2,12 @@ var http = require('http')
 var args = require('minimist')(process.argv, {
   alias:{
     p:'port',
-    r:'redis_host',
-    v:'verbose'
+    d:'datafile'
   },
   default:{
-    port:80
-  },
-  boolean:['verbose']
+    port:80,
+    datafile:process.env.DATA_FILE || '/data/file.json'
+  }
 })
 
 var Server = require('./server')

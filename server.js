@@ -1,33 +1,23 @@
 var concat = require('concat-stream')
 var Router = require('routes-router')
 var ecstatic = require('ecstatic')
-var redis = require('redis')
+var fs = require('fs');
 
 module.exports = function(opts){
 
-  var port = opts.redis_port || process.env.USE_REDIS_PORT || 6379
-  var host = opts.redis_host || process.env.USE_REDIS_HOST || 'redis'
+  var dataFile = opts.datafile
 
-  var connectionStatus = false
+  var connectionStatus = true
 
-  var client = redis.createClient(port, host, {})
-  client.on('error', function(err){
-    connectionStatus = false
-    console.log('Error from the redis connection:')
-    console.log(err)
-  })
-  client.on('end', function(err){
-    connectionStatus = false
-    console.log('Lost connection to Redis server')
-  })
-  client.on('ready', function(err){
-    connectionStatus = true
-    console.log('Connection made to the Redis server')
-  })
+  function readData(){
+    var whaleData = fs.readFileSync(dataFile, 'utf8')
+    if(!whaleData) whaleData = '[]'
+    return JSON.parse(whaleData)
+  }
 
-  console.log('-------------------------------------------');
-  console.log('have host: ' + host)
-  console.log('have port: ' + port)
+  function writeData(data){
+    fs.writeFileSync(dataFile, JSON.stringify(data), 'utf8')
+  }
 
   var router = Router()
   var fileServer = ecstatic({ root: __dirname + '/client' })
@@ -43,22 +33,15 @@ module.exports = function(opts){
 
   router.addRoute("/v1/whales", {
     GET: function (req, res) {
-      
-      client.lrange('whales', 0, -1, function(err, data){
-        res.setHeader('Content-type', 'application/json')
-        res.end(JSON.stringify(data))
-      })
+      res.end(JSON.stringify(readData))
     },
     POST: function (req, res) {
       req.pipe(concat(function(data){
         data = data.toString()
-
-        client.rpush('whales', data, function(){
-          client.save(function(){
-            res.end('ok')  
-          })
-        })
-        
+        var allWhales = readData()
+        allWhales.push(data)
+        writeData(allWhales)
+        res.end('ok')
       }))
     }
   })
