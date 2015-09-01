@@ -11,12 +11,15 @@ module.exports = function(opts){
 
   function readData(){
     var whaleData = fs.readFileSync(dataFile, 'utf8')
-    if(!whaleData) whaleData = '[]'
     return JSON.parse(whaleData)
   }
 
   function writeData(data){
     fs.writeFileSync(dataFile, JSON.stringify(data), 'utf8')
+  }
+
+  if(!fs.existsSync(dataFile)){
+    writeData([])
   }
 
   var router = Router()
@@ -33,7 +36,8 @@ module.exports = function(opts){
 
   router.addRoute("/v1/whales", {
     GET: function (req, res) {
-      res.end(JSON.stringify(readData))
+      var whaleData = JSON.stringify(readData())
+      res.end(whaleData)
     },
     POST: function (req, res) {
       req.pipe(concat(function(data){

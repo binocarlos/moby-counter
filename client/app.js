@@ -20,6 +20,8 @@
   function load_data(done){
     $.get('/v1/whales', function(data){
 
+      if(typeof(data)=='string') data = JSON.parse(data)
+
       var ret = data.map(function(st){
         var parts = st.split(':')
         return {
