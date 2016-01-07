@@ -66,6 +66,7 @@
       $(elem).addClass('animated tada');  
     }
     holder.appendChild(elem)
+    $('#clickmessage').hide()
   }
 
   // will put the mobies on the screen as per state
@@ -87,6 +88,7 @@
 
   $(function(){
     $('#preloader').show()
+    $('#clickmessage').show()
     $('#holder').click(handle_click)
     check_status()
   })
