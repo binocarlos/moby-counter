@@ -32,10 +32,9 @@ html,body{
 }
 
 .clickmessagetext{
-  color:#ccc;
-  font-weight:bold;
+  color:#e5e5e5;
   font-family: Arial;
-  font-size: 4em;
+  font-size: 2em;
 }
 
 .seabg {
