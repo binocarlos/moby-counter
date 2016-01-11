@@ -5,6 +5,7 @@ var postgres = require('pg')
 
 module.exports = function(opts){
 
+  console.log('using postgres server')
   var port = opts.postgres_port || process.env.USE_POSTGRES_PORT || 5432
   var host = opts.postgres_host || process.env.USE_POSTGRES_HOST || 'postgres'
   var user = opts.postgres_user || process.env.POSTGRES_USER || 'flocker'

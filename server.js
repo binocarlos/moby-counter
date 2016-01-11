@@ -5,6 +5,8 @@ var redis = require('redis')
 
 module.exports = function(opts){
 
+  console.log('using redis server')
+
   var port = opts.redis_port || process.env.USE_REDIS_PORT || 6379
   var host = opts.redis_host || process.env.USE_REDIS_HOST || 'redis'
 
