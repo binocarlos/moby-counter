@@ -18,7 +18,7 @@ module.exports = function(opts){
   while(new Date().getTime() < now + 10000){ /* do nothing */ } 
 
   // XXX: Use `user` and `password` from env.
-  var conString = 'postgres://' + 'postgres@' + host + '/postgres' ;
+  var conString = 'postgres://' + user + ':' + password + '@' + host + '/postgres' ;
   console.log(conString)
 
   var client = new postgres.Client(conString);
