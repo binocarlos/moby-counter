@@ -17,7 +17,6 @@ module.exports = function(opts){
   // Wait for WeaveDNS to setup DB hostname.
   while(new Date().getTime() < now + 10000){ /* do nothing */ } 
 
-  // XXX: Use `user` and `password` from env.
   var conString = 'postgres://' + user + ':' + password + '@' + host + '/postgres' ;
   console.log(conString)
 
