@@ -14,9 +14,11 @@ module.exports = function(opts){
   var connectionStatus = false
   var now = new Date().getTime();
 
-  // Wait for WeaveDNS to setup DB hostname.
-  while(new Date().getTime() < now + 10000){ /* do nothing */ } 
-
+  if(process.env.DELAY_CONNECTION){
+    // Wait for WeaveDNS to setup DB hostname.
+    while(new Date().getTime() < now + 10000){ /* do nothing */ }   
+  }
+  
   var conString = 'postgres://' + user + ':' + password + '@' + host + '/postgres' ;
   console.log(conString)
 
@@ -26,22 +28,23 @@ module.exports = function(opts){
       return console.error('could not connect to postgres', err);
     }
 
+    // lets check we can do a basic query
+    console.log('checking we can do a basic query on the database')
     client.query('SELECT NOW() AS "theTime"', function(err, result) {
       if(err) {
         return console.error('error running query', err);
       }
-      console.log(result.rows[0].theTime);
+      console.log('basic query success: ' + result.rows[0].theTime);
+      client.query('CREATE TABLE IF NOT EXISTS mywhales (whale text)', function(err, result) {
+        if(err) {
+          console.log('Error creating whales table:', err);
+        }
+        else{
+          console.log('success creating whales table - setting connectionStatus to true')
+          connectionStatus = true
+        }
+      });
     });
-
-    client.query('CREATE TABLE mywhales (whale text)', function(err, result) {
-      if(err) {
-        console.log('Error creating whales table:', err);
-      }
-      else{
-        connectionStatus = true
-      }
-    });
-
   });
 
   console.log('-------------------------------------------');
