@@ -22,30 +22,50 @@ module.exports = function(opts){
   var conString = 'postgres://' + user + ':' + password + '@' + host + '/postgres' ;
   console.log(conString)
 
-  var client = new postgres.Client(conString);
-  client.connect(function(err) {
-    if(err) {
-      return console.error('could not connect to postgres', err);
+  var connectionAttempts = 0
+  var client
+
+  function connectToDatabase(){
+
+    client = new postgres.Client(conString)
+
+    if(connectionAttempts>=10){
+      console.error('attempted to connect to Postgres 10 times and failed - giving up')
+      process.exit(1)
+      return
     }
 
-    // lets check we can do a basic query
-    console.log('checking we can do a basic query on the database')
-    client.query('SELECT NOW() AS "theTime"', function(err, result) {
+    console.log('connection to Postgres attempt: ' + connectionAttempts)
+    client.connect(function(err) {
       if(err) {
-        return console.error('error running query', err);
+        connectionAttempts++
+        console.error('could not connect to postgres', err);
+        console.log('waiting 5 seconds before reconnect')
+        setTimeout(connectToDatabase, 5000)
+        return
       }
-      console.log('basic query success: ' + result.rows[0].theTime);
-      client.query('CREATE TABLE IF NOT EXISTS mywhales (whale text)', function(err, result) {
+
+      // lets check we can do a basic query
+      console.log('checking we can do a basic query on the database')
+      client.query('SELECT NOW() AS "theTime"', function(err, result) {
         if(err) {
-          console.log('Error creating whales table:', err);
+          return console.error('error running query', err);
         }
-        else{
-          console.log('success creating whales table - setting connectionStatus to true')
-          connectionStatus = true
-        }
+        console.log('basic query success: ' + result.rows[0].theTime);
+        client.query('CREATE TABLE IF NOT EXISTS mywhales (whale text)', function(err, result) {
+          if(err) {
+            console.log('Error creating whales table:', err);
+          }
+          else{
+            console.log('success creating whales table - setting connectionStatus to true')
+            connectionStatus = true
+          }
+        });
       });
     });
-  });
+  }
+
+  connectToDatabase()
 
   console.log('-------------------------------------------');
   console.log('have host: ' + host)
