@@ -22,22 +22,25 @@ module.exports = function(opts){
 
   var client = new postgres.Client(conString);
   client.connect(function(err) {
-  if(err) {
-    return console.error('could not connect to postgres', err);
-  }
-
-  client.query('SELECT NOW() AS "theTime"', function(err, result) {
     if(err) {
-      return console.error('error running query', err);
+      return console.error('could not connect to postgres', err);
     }
-    console.log(result.rows[0].theTime);
-  });
 
-  client.query('CREATE TABLE mywhales (whale text)', function(err, result) {
-    if(err) {
-      console.log('Error creating whales table:', err);
-    }
-  });
+    client.query('SELECT NOW() AS "theTime"', function(err, result) {
+      if(err) {
+        return console.error('error running query', err);
+      }
+      console.log(result.rows[0].theTime);
+    });
+
+    client.query('CREATE TABLE mywhales (whale text)', function(err, result) {
+      if(err) {
+        console.log('Error creating whales table:', err);
+      }
+      else{
+        connectionStatus = true
+      }
+    });
 
   });
 
