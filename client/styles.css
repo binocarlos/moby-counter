@@ -8,7 +8,7 @@ html,body{
 .whale{
   background-color:#ffffff;
   position:absolute;
-  background-image: url(moby.png);
+  background-image: url(k8s.png);
   background-repeat: no-repeat;
   background-size: cover;
 }
