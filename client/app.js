@@ -4,6 +4,7 @@
   var height = 100
   var connectionStatus = false
   var dataLoaded = false
+  var whaleCount = 0
 
   function activate_page(){
     if(!dataLoaded){
@@ -29,7 +30,7 @@
       })
 
       done(ret)
-    
+
     })
   }
 
@@ -55,7 +56,12 @@
   function add_whale(x, y, animate){
     var holder = document.getElementById('holder')
     var elem = document.createElement('div')
-    $(elem).addClass('whale')
+    whaleCount++
+    if (y < 100 && whaleCount == 5) {
+        $(elem).addClass('bug')
+    } else {
+        $(elem).addClass('whale')
+    }
     $(elem).css({
       left:x + 'px',
       top:y + 'px',
@@ -63,7 +69,7 @@
       height:height + 'px'
     })
     if(animate){
-      $(elem).addClass('animated tada');  
+      $(elem).addClass('animated tada');
     }
     holder.appendChild(elem)
     $('#clickmessage').hide()
