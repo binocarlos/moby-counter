@@ -29,7 +29,7 @@
       })
 
       done(ret)
-    
+
     })
   }
 
@@ -63,7 +63,7 @@
       height:height + 'px'
     })
     if(animate){
-      $(elem).addClass('animated tada');  
+      $(elem).addClass('animated tada');
     }
     holder.appendChild(elem)
     $('#clickmessage').hide()
