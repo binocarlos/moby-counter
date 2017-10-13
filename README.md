@@ -30,3 +30,7 @@ If any of the following variables are defined - it will force the app to use the
  * USE_POSTGRES_PORT
  * POSTGRES_USER
  * POSTGRES_PASSWORD
+ 
+## License
+
+MIT
