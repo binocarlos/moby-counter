@@ -13,6 +13,14 @@ html,body{
   background-size: cover;
 }
 
+.bug{
+  background-color:#ffffff;
+  position:absolute;
+  background-image: url(bug.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 #holder{
   position:absolute;
   width:100%;
