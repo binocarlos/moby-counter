@@ -1,5 +1,6 @@
 (function(){
 
+  var count = 0
   var width = 110
   var height = 100
   var connectionStatus = false
@@ -19,7 +20,9 @@
 
   function load_data(done){
     $.get('/v1/whales', function(data){
-
+      count = 0;
+      count = data.length;
+      console.log("%d", count);
       var ret = data.map(function(st){
         var parts = st.split(':')
         return {
@@ -53,6 +56,8 @@
   }
 
   function add_whale(x, y, animate){
+    var recordCount = document.getElementById("clicks")
+    recordCount.innerHTML = "Database Records: " + count;
     var holder = document.getElementById('holder')
     var elem = document.createElement('div')
     $(elem).addClass('whale')
@@ -77,6 +82,7 @@
   }
 
   function handle_click(e){
+    count += 1;
     if(!connectionStatus) return
     var offset = $(this).offset();
     var x = e.pageX - offset.left - (width/2);

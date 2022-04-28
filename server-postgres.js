@@ -88,18 +88,38 @@ module.exports = function(opts){
       
       console.log('Getting whales');
 
-      var select_query = client.query('SELECT * FROM mywhales')
       var array = [];
-      select_query.on('row', function(row) {
-        console.log('Getting whale "%s"', row.whale);
-        array.push(row.whale);
-      });
 
-      select_query.on('end', function() {
+      const { Client, Query } = require('pg')
+      const query = client.query(new Query('SELECT * FROM mywhales'))
+      query.on('row', row => {
+          console.log('Getting whale "%s"', row.whale);
+          array.push(row.whale);
+      })
+      query.on('end', resp => {
         console.log('Sending whales "%s"', JSON.stringify(array))
         res.setHeader('Content-type', 'application/json')
         res.end(JSON.stringify(array))
-      });
+      })
+      query.on('error', resp => {})
+
+      //var select_query = client.query('SELECT * FROM mywhales')
+      //var array = [];
+      //select_query.rows.forEach(row=>{
+      //    console.log('Getting whale "%s"', row.whale);
+      //    array.push(row.whale);
+      //  });
+      
+      //select_query.on('row', function(row) {
+      //  console.log('Getting whale "%s"', row.whale);
+      //  array.push(row.whale);
+      //});
+
+      //select_query.on('end', function() {
+      //  console.log('Sending whales "%s"', JSON.stringify(array))
+      //  res.setHeader('Content-type', 'application/json')
+      //  res.end(JSON.stringify(array))
+      //});
     },
 
     POST: function (req, res) {

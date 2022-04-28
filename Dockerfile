@@ -1,4 +1,4 @@
-FROM errordeveloper/iojs-minimal-runtime:v1.0.1
+FROM node:16.15-slim
 MAINTAINER Kai Davenport <kaiyadavenport@gmail.com>
 ADD . /srv/app
 WORKDIR /srv/app
